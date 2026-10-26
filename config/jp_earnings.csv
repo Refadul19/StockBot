@@ -1,0 +1,12 @@
+# Manual earnings dates for the Japan research module. These override yfinance.
+# time is optional: HH:MM Japan time, after_close, or during_hours. Blank = unknown, treated as after close.
+# Every row below is "to verify": check the company's own IR calendar before trusting it.
+# 2026-10-27: none of our stocks report (Shin-Etsu and Canon are not in our list).
+ticker,date,time,note
+6857.T,2026-10-28,,to verify (Advantest)
+4062.T,2026-10-29,,to verify (Ibiden)
+8035.T,2026-10-30,,to verify (Tokyo Electron)
+6981.T,2026-10-30,,to verify (Murata)
+6920.T,2026-10-30,,to verify (Lasertec)
+7735.T,2026-10-30,,to verify (Screen Holdings)
+285A.T,2026-10-30,,to verify (Kioxia)

@@ -1,0 +1,65 @@
+# Copy to config.yaml and change what you like. Any key you leave out uses the default.
+# Quote times like "09:45".
+
+scanner:
+  min_price: 2.0                  # skip stocks under $2
+  max_price: 200.0
+  min_gap_pct: 4.0                # open vs prior close
+  min_avg_dollar_volume: 5000000  # 20-day average, drops thin stocks
+  min_avg_volume: 500000
+  max_candidates: 15              # gappers loaded each day
+  rescan_minutes: 5               # intraday re-rank interval
+  active_watchlist: 6             # only the top N after re-rank may be bought
+
+entry:
+  no_entry_before: "10:00"        # New York time; the trend score needs two 15m session bars
+  no_entry_after: "15:00"
+  min_trend_score: 60.0           # 15-minute trend score (0 to 100)
+  vol_lookback_5m: 6              # regular-session 5m bars only
+  min_vol_bars_5m: 3              # need this many earlier session bars before judging volume
+  min_vol_ratio_5m: 1.2           # last 5m bar volume vs recent average
+  max_extension_atr: 2.0          # do not chase: max distance above the 5m EMA9, in ATRs
+  cooldown_after_win_min: 30      # no re-entry right after a win
+  cooldown_after_loss_min: 15
+  max_entries_per_symbol: 2
+  entry_limit_offset_pct: 0.3     # skip the fill if the next open runs this far past the signal
+
+risk:
+  risk_per_trade_pct: 0.5         # % of equity lost if the first stop is hit
+  max_position_pct: 10.0
+  max_open_positions: 5
+  max_participation: 0.05         # order size <= 5% of the last N minutes' volume
+  participation_window_min: 5
+  daily_loss_limit_pct: 2.0       # no new trades after this loss in a day
+
+exit:
+  atr_period: 14                  # on regular-session 5-minute bars
+  atr_floor_from_daily: true      # 5m ATR never below daily ATR / sqrt(78), so early stops are not too tight
+  stop_atr_mult: 1.5              # stop sized to the stock's normal movement
+  target_r: 2.0                   # first target at 2x the initial risk
+  target_fraction: 0.75           # sell three quarters there
+  trail_atr_mult: 1.5             # trail the last quarter
+  profit_locks:                   # [gain reached in R, stop moved to entry + this many R]
+    - [1.0, 0.0]
+    - [1.5, 0.5]
+  time_stop_min: 20               # exit trades that go nowhere...
+  time_stop_min_progress_r: 0.3   # ...meaning less than 0.3R up after 20 minutes
+  flatten_at: "15:55"
+
+fill:                             # how pessimistic the simulator is
+  slippage_bps: 5.0
+  half_spread_bps: 5.0
+  impact_bps_per_1pct_participation: 2.0
+  stop_extra_slippage_bps: 10.0
+  finra_taf_per_share: 0.000166
+  finra_taf_cap: 8.3
+  sec_fee_rate: 0.0000278         # check the current SEC Section 31 rate
+  commission_per_share: 0.0
+  limit_fills_on_touch: false
+
+backtest:
+  initial_equity: 100000.0
+  data_feed: "sip"                # "iex" only if SIP is refused; IEX volume is a small slice of the market
+  cache_dir: "data_cache"
+  out_dir: "runs"
+  out_of_sample_fraction: 0.3     # last 30% of days are held out for an honest check

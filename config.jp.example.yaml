@@ -1,0 +1,71 @@
+# Settings for `python -m jpgap research`. Copy to config.jp.yaml and pass --config config.jp.yaml.
+# Anything you leave out uses the default shown here.
+universe:
+  groups:                              # keep the group labels: results are compared by group
+    Semiconductors & chip equipment:
+      6857.T: Advantest
+      8035.T: Tokyo Electron
+      285A.T: Kioxia Holdings
+      6723.T: Renesas Electronics
+      6146.T: Disco
+      6920.T: Lasertec
+      7735.T: Screen Holdings
+    Electronic components:
+      6981.T: Murata Manufacturing
+      6762.T: TDK
+      4062.T: Ibiden
+    AI infrastructure:
+      5803.T: Fujikura
+      5801.T: Furukawa Electric
+      5802.T: Sumitomo Electric
+      5016.T: JX Advanced Metals
+      5713.T: Sumitomo Metal Mining
+      3103.T: Unitika
+    AI investment:
+      9984.T: SoftBank Group
+  signal: ^SOX                         # US overnight signal that defines the buckets
+  context_signals: [^GSPC, ^IXIC, JPY=X]
+  benchmark: 1306.T                    # TOPIX ETF, for buy and hold
+data:
+  months: 6                            # history length: 3, 6, 12, 60 ...
+  end: null                            # last date (YYYY-MM-DD); null = today
+  lookback_buffer_days: 10             # extra days fetched so the first day has a previous close
+  cache_dir: data_cache/jp
+  cache_max_age_days: 1                # re-download when the cache is older than this
+  request_pause_s: 0.5
+  glitch_ratio: 3.0                    # drop a row whose price is 3x above/below the rolling median (bad data)
+  glitch_window: 11
+analysis:
+  bucket_edges_pct: [-2.0, -1.0, 1.0, 2.0]   # SOX move buckets, percent. Fixed up front, not tuned
+  min_bucket_days: 10                  # fewer days than this = "too few days, not reliable"
+  out_of_sample_fraction: 0.3          # most recent 30% of days held out
+  extreme_sox_pct: 4.0                 # a SOX move bigger than this (up or down) marks the day "extreme"
+  outlier_warn_pct: 25.0               # warn about gaps or moves bigger than this (likely data errors)
+  min_days_for_ranking: 30             # stocks with fewer days are left out of the ranking
+costs:
+  cost_per_side_pct: 0.1               # commission + slippage on the buy and again on the sell
+  lot_size: 100                        # Japan's trading unit
+rules:
+  threshold_pct: 1.0                   # SOX move that triggers the simple follow / dip rules
+  # The next two only drive the separate "feasibility" section of the report:
+  budget_per_trade_yen: 500000         # yen per trade; one 100-share lot must fit inside it
+  capital_yen: 3000000                 # your account size; capital / budget = most trades open at once
+crosscheck:
+  proxies: [SOXX, SMH]                 # US chip ETFs used as a second view of big SOX days
+  min_sox_move_pct: 5.0                # only SOX days moving more than this are cross-checked
+  tolerance_pp: 2.0                    # within this many percentage points counts as a match
+earnings:
+  exclude: true                        # false (or --include-earnings) keeps earnings days in the main results
+  manual_file: config/jp_earnings.csv  # ticker,date,time,note ; overrides yfinance
+  use_yfinance: true
+  yfinance_limit: 60
+  trust_yfinance_times: false          # Yahoo times for Japan are mostly placeholders
+  cache_max_age_days: 7
+  unknown_time_as: after_close         # assumption when no time is known: after_close or during_hours
+  after_close_from: "15:00"            # Japan time; a given time at or after this counts as after close
+  mark_announcement_day: true          # after close: mark the report day itself
+  mark_next_day_after_close: true      # after close: also mark the next trading day (the reaction)
+  override_window_days: 7              # a manual date replaces yfinance dates this close to it
+  max_gap_days: 120                    # a longer silence between report dates is logged as uncertain
+output:
+  out_dir: runs/jp
