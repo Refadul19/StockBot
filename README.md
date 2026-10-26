@@ -1,3 +1,41 @@
+# StockBot: US gap-and-trend backtester and Japan research tools
+
+[![tests](https://github.com/Refadul19/StockBot/actions/workflows/tests.yml/badge.svg)](https://github.com/Refadul19/StockBot/actions/workflows/tests.yml)
+[![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+> **For education and research only. This is not financial advice.** Past or simulated results
+> do not predict future results, and the simple rules tested here did not beat buy and hold.
+> The code is paper-trading only and has no live-money mode. Market data comes from Alpaca
+> (US) and unofficial Yahoo Finance (Japan), and can be wrong.
+
+This repository has two independent packages:
+
+| Package | What it is | Needs |
+|---|---|---|
+| `jpgap` | Research on Japanese stocks: what they do after the Tokyo open following big overnight moves in the US chip index (SOX). Daily data, no trading. See [Japan research module](#japan-research-module-jpgap-research-only). | Nothing but Python. No account or keys. |
+| `gapbot` | An intraday US gap-and-trend backtester with pessimistic fills, described below. | Free Alpaca paper keys for real data (a synthetic mode works without them). |
+
+## Quick start
+
+Python 3.10 or newer.
+
+```bash
+git clone https://github.com/Refadul19/StockBot.git
+cd StockBot
+python -m venv .venv
+# Windows: .venv\Scripts\activate     macOS/Linux: source .venv/bin/activate
+pip install -r requirements.txt
+python -m pytest -q                              # all tests should pass
+
+python -m jpgap research --months 60             # Japan research, writes tables and charts to runs/jp/
+python -m gapbot backtest --synthetic --start 2025-03-03 --end 2025-04-30   # US backtester demo, no keys
+```
+
+Contributions and bug reports are welcome. Run `python -m pytest -q` before opening a pull request.
+Licensed under the [MIT License](LICENSE).
+
+---
+
 # gapbot: gap-and-trend day trading backtester
 
 A backtester for an intraday US stock strategy: scan for gap-ups, buy on a 15-minute
