@@ -5,3 +5,4 @@ pyyaml>=6.0
 matplotlib>=3.8
 pytest>=8.0
 yfinance>=0.2.40
+streamlit>=1.40

@@ -118,6 +118,19 @@ class EarningsConfig:
 
 
 @dataclass
+class PlanConfig:
+    """Settings for the web dashboard's 'reference levels'. These are descriptions of how far this
+    stock usually moves from the open, NOT predictions, and they are fixed here before any
+    results are seen. Levels come from in-sample days only; the last part is the honest test."""
+    target_percentile: float = 50.0        # target = this percentile of past open-to-high moves (higher = further away)
+    stop_percentile: float = 50.0          # stop = this percentile of past open-to-low moves
+    min_trades_for_verdict: int = 30       # fewer out-of-sample trades than this = "too few to judge"
+    stale_days: int = 4                    # warn when the latest SOX session is older than this many calendar days
+    earnings_warn_days: int = 3            # warn when a report date falls within this many days ahead
+    min_history_days: int = 120            # refuse tickers with fewer usable paired days than this
+
+
+@dataclass
 class OutputConfig:
     out_dir: str = "runs/jp"
 
@@ -131,6 +144,7 @@ class JpConfig:
     rules: RulesConfig = field(default_factory=RulesConfig)
     crosscheck: CrossCheckConfig = field(default_factory=CrossCheckConfig)
     earnings: EarningsConfig = field(default_factory=EarningsConfig)
+    plan: PlanConfig = field(default_factory=PlanConfig)
     output: OutputConfig = field(default_factory=OutputConfig)
 
     def to_dict(self) -> dict[str, Any]:

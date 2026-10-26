@@ -67,5 +67,12 @@ earnings:
   mark_next_day_after_close: true      # after close: also mark the next trading day (the reaction)
   override_window_days: 7              # a manual date replaces yfinance dates this close to it
   max_gap_days: 120                    # a longer silence between report dates is logged as uncertain
+plan:                                  # only used by the web dashboard (app.py)
+  target_percentile: 50.0              # target = this percentile of past open-to-high moves
+  stop_percentile: 50.0                # stop = this percentile of past open-to-low moves
+  min_trades_for_verdict: 30           # fewer out-of-sample trades than this = too few to judge
+  stale_days: 4                        # warn when the latest SOX session is older than this
+  earnings_warn_days: 3                # warn when a report date is within this many days
+  min_history_days: 120                # refuse tickers with fewer usable days than this
 output:
   out_dir: runs/jp

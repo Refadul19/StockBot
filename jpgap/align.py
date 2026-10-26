@@ -113,10 +113,12 @@ def build_pairs(jp: pd.DataFrame, us_close: pd.Series) -> tuple[pd.DataFrame, li
             "intraday": c / o - 1.0,
             "next_day": nxt,   # close T to close T+1: an outcome, never used to decide anything
             "open": o, "close": c,
+            "high": jp["high"].iloc[i] if "high" in jp else np.nan,
+            "low": jp["low"].iloc[i] if "low" in jp else np.nan,
         }
     pairs = pd.DataFrame.from_dict(rows, orient="index")
     if pairs.empty:
-        pairs = pd.DataFrame(columns=PAIR_COLS + ["open", "close"])
+        pairs = pd.DataFrame(columns=PAIR_COLS + ["open", "close", "high", "low"])
     return pairs, skipped
 
 

@@ -31,6 +31,22 @@ python -m jpgap research --months 60             # Japan research, writes tables
 python -m gapbot backtest --synthetic --start 2025-03-03 --end 2025-04-30   # US backtester demo, no keys
 ```
 
+## Web dashboard (type a ticker, see reference levels)
+
+```bash
+streamlit run app.py
+```
+
+Enter a Tokyo stock code (for example `6857`) and the page shows the expected open, a reference target
+and stop, and **how those same levels would have done** on days they were not built from. They are
+descriptions of how far the stock usually moves, not predictions. In the project's own tests they lost
+money after costs on every stock tried, and the page says so whenever that is the case.
+
+**Deploy it free on Streamlit Community Cloud:** sign in at https://share.streamlit.io with GitHub, press
+"Create app", choose this repository, branch `main`, main file `app.py`, then Deploy. No keys or secrets are
+needed. Note that Yahoo Finance sometimes limits requests from shared cloud servers; if so the page shows
+"Could not load data" and works again later.
+
 Contributions and bug reports are welcome. Run `python -m pytest -q` before opening a pull request.
 Licensed under the [MIT License](LICENSE).
 
